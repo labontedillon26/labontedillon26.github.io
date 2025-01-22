@@ -1,4 +1,4 @@
-## Peter G.
+## Dillon Labonte
 
 <img src="SiteFiles/github_page_pfp.jpeg" align="left" width=150>&nbsp; Electrical Engineering and Mathematics Major<br/>
 &nbsp; Cross Country Athlete <br/>
