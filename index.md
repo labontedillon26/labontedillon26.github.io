@@ -1,7 +1,7 @@
 ## Peter G.
 
 <img src="SiteFiles/github_page_pfp.jpeg" align="left" width=150>&nbsp; Electrical Engineering and Mathematics Major<br/>
-&nbsp; Cross Country Athlete
+&nbsp; Cross Country Athlete <br/>
 &nbsp; Southern New Hampshire University <br/>
 &nbsp; &nbsp; email: labontedillon@gmail.com<br/>
 &nbsp; &nbsp; [Resume](https://labontedillon26.github.io/SiteFiles/Resume/peter_resume.html)
