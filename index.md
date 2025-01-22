@@ -4,7 +4,8 @@
 &nbsp; Cross Country Athlete <br/>
 &nbsp; Southern New Hampshire University <br/>
 &nbsp; &nbsp; email: labontedillon@gmail.com<br/>
-&nbsp; &nbsp; <a href="https://labontedillon26.github.io/SiteFiles/Resume/Fall24Resume.pdf" target="_blank">Resume</a>
+&nbsp; &nbsp; <a href="https://labontedillon26.github.io/SiteFiles/Resume/Fall24Resume.pdf" target="_blank">Resume</a> <br/>
+&nbsp; &nbsp; <a href="https://www.linkedin.com/in/dillon-labonte-b55299290/" target="_blank">LinkedIn</a>
 
 <br/>
 <br/>
