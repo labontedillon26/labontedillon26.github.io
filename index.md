@@ -4,7 +4,7 @@
 &nbsp; Cross Country Athlete <br/>
 &nbsp; Southern New Hampshire University <br/>
 &nbsp; &nbsp; email: labontedillon@gmail.com<br/>
-&nbsp; &nbsp; [Resume](https://labontedillon26.github.io/SiteFiles/Resume/Fall24Resume.pdf){target="_blank"}
+&nbsp; &nbsp; [Resume](https://labontedillon26.github.io/SiteFiles/Resume/Fall24Resume.pdf){:target="_blank"}
 
 <br/>
 <br/>
