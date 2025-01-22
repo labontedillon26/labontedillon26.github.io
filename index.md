@@ -1,7 +1,8 @@
 ## Peter G.
 
-<img src="SiteFiles/Peter_Griffin.png" align="left" width=150>&nbsp; Safety Inspector<br/>
-&nbsp; Pawtucket Brewery <br/>
+<img src="SiteFiles/github_page_pfp.jpeg" align="left" width=150>&nbsp; Electrical Engineering and Mathematics Major<br/>
+&nbsp; Cross Country Athlete
+&nbsp; Southern New Hampshire University <br/>
 &nbsp; &nbsp; email: labontedillon@gmail.com<br/>
 &nbsp; &nbsp; [Resume](https://labontedillon26.github.io/SiteFiles/Resume/peter_resume.html)
 
