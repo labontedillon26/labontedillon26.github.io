@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dillon Labonte">
+<meta name="dcterms.date" content="2025-01-29">
+
+<title>Analytics Report Shell</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Analytics_Report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Analytics_Report_files/libs/quarto-html/quarto.js"></script>
+<script src="Analytics_Report_files/libs/quarto-html/popper.min.js"></script>
+<script src="Analytics_Report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Analytics_Report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Analytics_Report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Analytics_Report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Analytics_Report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Analytics_Report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Analytics_Report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="Analytics_Report_files/libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="Analytics_Report_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#statement-of-purpose" id="toc-statement-of-purpose" class="nav-link active" data-scroll-target="#statement-of-purpose">Statement of Purpose</a></li>
+  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link" data-scroll-target="#executive-summary">Executive Summary</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
+  <li><a href="#model-construction" id="toc-model-construction" class="nav-link" data-scroll-target="#model-construction">Model Construction</a>
+  <ul class="collapse">
+  <li><a href="#linear-regression-model" id="toc-linear-regression-model" class="nav-link" data-scroll-target="#linear-regression-model">Linear Regression Model</a></li>
+  <li><a href="#random-forest-model" id="toc-random-forest-model" class="nav-link" data-scroll-target="#random-forest-model">Random Forest Model</a></li>
+  <li><a href="#extreme-gradient-boosting-model" id="toc-extreme-gradient-boosting-model" class="nav-link" data-scroll-target="#extreme-gradient-boosting-model">Extreme Gradient Boosting Model</a></li>
+  </ul></li>
+  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment">Model Assessment</a>
+  <ul class="collapse">
+  <li><a href="#tso-model" id="toc-tso-model" class="nav-link" data-scroll-target="#tso-model">TSO Model</a></li>
+  <li><a href="#linear-regression-model-1" id="toc-linear-regression-model-1" class="nav-link" data-scroll-target="#linear-regression-model-1">Linear Regression Model</a></li>
+  <li><a href="#random-forest-model-1" id="toc-random-forest-model-1" class="nav-link" data-scroll-target="#random-forest-model-1">Random Forest Model</a></li>
+  <li><a href="#extreme-gradient-boosting-model-1" id="toc-extreme-gradient-boosting-model-1" class="nav-link" data-scroll-target="#extreme-gradient-boosting-model-1">Extreme Gradient Boosting Model</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Analytics Report Shell</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Dillon Labonte <a href="mailto:dillon.labonte@snhu.edu" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Southern New Hampshire University
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 29, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># including necessary libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># styling</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">kable_styling_bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"hover"</span>, <span class="st">"striped"</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># read in data and clean up column names</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"energy_dataset.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">make_clean_names</span>(<span class="fu">names</span>(data))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># adding generation_total column to data set</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">generation_total =</span> generation_biomass <span class="sc">+</span> generation_fossil_brown_coal_lignite <span class="sc">+</span> generation_fossil_coal_derived_gas <span class="sc">+</span> generation_fossil_gas <span class="sc">+</span> generation_fossil_hard_coal <span class="sc">+</span> generation_fossil_oil <span class="sc">+</span> generation_fossil_oil_shale <span class="sc">+</span> generation_fossil_peat <span class="sc">+</span> generation_geothermal <span class="sc">+</span> generation_hydro_pumped_storage_consumption <span class="sc">+</span> generation_hydro_run_of_river_and_poundage <span class="sc">+</span> generation_hydro_water_reservoir <span class="sc">+</span> generation_marine <span class="sc">+</span> generation_nuclear <span class="sc">+</span> generation_other <span class="sc">+</span> generation_other_renewable <span class="sc">+</span> generation_solar <span class="sc">+</span> generation_waste <span class="sc">+</span> generation_wind_offshore <span class="sc">+</span> generation_wind_onshore)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># adding renewable_generation_total column to data set</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">renewable_generation_total =</span> generation_biomass <span class="sc">+</span> generation_geothermal <span class="sc">+</span> generation_hydro_run_of_river_and_poundage <span class="sc">+</span> generation_hydro_water_reservoir <span class="sc">+</span> generation_hydro_pumped_storage_consumption <span class="sc">+</span> generation_marine <span class="sc">+</span> generation_other_renewable <span class="sc">+</span> generation_solar <span class="sc">+</span> generation_wind_offshore <span class="sc">+</span> generation_wind_onshore)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># adding nonrenewable_generation_total column to data set</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nonrenewable_generation_total =</span> generation_fossil_brown_coal_lignite <span class="sc">+</span> generation_fossil_coal_derived_gas <span class="sc">+</span> generation_fossil_gas <span class="sc">+</span> generation_fossil_hard_coal <span class="sc">+</span> generation_fossil_oil <span class="sc">+</span> generation_fossil_oil_shale <span class="sc">+</span> generation_fossil_peat)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># adding hour_of_day column to data set</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hour_of_day =</span> <span class="fu">hour</span>(time))</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># adding month_of_year column to data set</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month_of_year =</span> <span class="fu">month</span>(time, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">abbr =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating RMSE of TSO model for price_day_ahead</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>tso_rmse <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(price_day_ahead, price_actual)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># split data into training, test, and validation sets</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234567890</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>data_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.75</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(data_splits)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_splits)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11111</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>test_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(temp, <span class="at">prop =</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>validation <span class="ot">&lt;-</span> <span class="fu">training</span>(test_splits)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(test_splits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># creating a predictors data set to use for model building</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(time, generation_hydro_pumped_storage_aggregated, forecast_wind_offshore_eday_ahead, total_load_actual, price_day_ahead, generation_total, renewable_generation_total, nonrenewable_generation_total))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="statement-of-purpose" class="level2">
+<h2 class="anchored" data-anchor-id="statement-of-purpose">Statement of Purpose</h2>
+<p>This project seeks to develop a regression model to predict day ahead electrical power prices by analyzing energy generation, demand, and weather forecasts. These predictions support grid operators, producers, and consumers in maintaining grid stability and optimizing energy use, especially as renewable energy sources grow in popularity.</p>
+</section>
+<section id="executive-summary" class="level2">
+<h2 class="anchored" data-anchor-id="executive-summary">Executive Summary</h2>
+<p>In order to assist grid operators, energy producers, and customers in making well-informed decisions, this project aimed to predict electricity prices for the following day. Reliable pricing predictions reduce issues brought on by the fluctuations of renewable energy sources, improve grid stability, and optimize generation and consumption. Using an extensive dataset that included hourly electricity prices, generation, demand, and weather data from 2015 to 2018, the project focused on Spain’s electrical grid, with implications in other energy grids around the world.</p>
+<p>A number of predictive models were constructed and assessed. The TSO model, a baseline model constructed by ENTSOE, produced a high RMSE of 13.25. We created three models in response: linear regression, random forest, and extreme gradient boosting. Hyper parameter tuning was used to maximize the predictability of these models. With an RMSE of 3.44 on validation data, the extreme gradient boosting model performed the best, allowing predictions to be within plus or minus $7 of actual prices.</p>
+<p>The results of this analysis shows that extreme gradient boosting and other advanced machine learning models provide significant improvements in prediction accuracy. These results highlight how regression can improve grid sustainability and reliability in a market driven by ever increasing renewable energy generation. These results offer useful insights in other global electrical grids.</p>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>The price of electrical power is a constantly changing variable that profoundly impacts society. Being able to predict electrical power prices a day in advance would allow for increased grid stability which is necessary to maintain a delicate balance of electrical supply and demand that the grid requires. These predictions allow producers of electricity to decide how much power to produce and when, and industrial consumers to decide when to use power for energy intensive processes.</p>
+<p>In this day and age renewable energies are becoming more popular and their power production and usage is ever increasing. However, renewable energy sources are variable and often rely on weather conditions. Accurate predictions of day ahead prices will allow grid operators to deploy backup power sources, such as fossil fuels, when needed during renewable energy fluctuations.</p>
+<p>This project aims to build a regression model to predict the electrical power prices a day in advance by analyzing generation, demand, and weather forecasts. These predictions support grid operators, producers, and consumers in their decision making, improving the reliability and sustainability of the electrical energy market.</p>
+<p>This project focuses on Spain’s electrical grid with hourly data over the course of 4 years, from 2015 through 2018. Insights gained from this analysis of Spain’s grid will be useful when considering electrical grids of other countries that are also incorporating large scale renewable energy generation.</p>
+</section>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>This data set was obtained from the European Network of Transmission System Operators of Electricity (ENTSOE) [1]. The transmission system operator (TSO) uses models to forecast day ahead electrical load and electricity prices. Let’s look at the root mean squared error (RMSE) of the TSO model predictions for day ahead price, compared to the actual price.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tso_rmse <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">13.24986</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>This RMSE is quite bad. This indicates that roughly 95% of the true day ahead prices will fall within 2 RMSEs, or about $26, of the true value. This is on the same order of magnitude as the electrical prices, often in the $50 or $60 range.</p>
+<p>Let’s look at the first 6 rows of our dataset to get an idea of what we’re dealing with before making models.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">time</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_biomass</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_brown_coal_lignite</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_coal_derived_gas</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_gas</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_hard_coal</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_oil</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_oil_shale</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_fossil_peat</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_geothermal</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">generation_hydro_pumped_storage_aggregated</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_hydro_pumped_storage_consumption</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_hydro_run_of_river_and_poundage</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_hydro_water_reservoir</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_marine</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_nuclear</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_other</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_other_renewable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_solar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_waste</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_wind_offshore</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_wind_onshore</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">forecast_solar_day_ahead</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">forecast_wind_offshore_eday_ahead</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">forecast_wind_onshore_day_ahead</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">total_load_forecast</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">total_load_actual</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">price_day_ahead</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">price_actual</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">generation_total</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">renewable_generation_total</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">nonrenewable_generation_total</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">hour_of_day</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">month_of_year</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2017-11-19 21:00:00</td>
+<td style="text-align: right;">336</td>
+<td style="text-align: right;">656</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11431</td>
+<td style="text-align: right;">6745</td>
+<td style="text-align: right;">262</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">499</td>
+<td style="text-align: right;">1556</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5047</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">256</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1806</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">1824</td>
+<td style="text-align: right;">29049</td>
+<td style="text-align: right;">29439</td>
+<td style="text-align: right;">69.72</td>
+<td style="text-align: right;">75.25</td>
+<td style="text-align: right;">28797</td>
+<td style="text-align: right;">4344</td>
+<td style="text-align: right;">19094</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">Nov</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2015-12-26 05:00:00</td>
+<td style="text-align: right;">370</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3929</td>
+<td style="text-align: right;">1831</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">3648</td>
+<td style="text-align: right;">461</td>
+<td style="text-align: right;">291</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7103</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">164</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6175</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6095</td>
+<td style="text-align: right;">19520</td>
+<td style="text-align: right;">19631</td>
+<td style="text-align: right;">29.02</td>
+<td style="text-align: right;">42.17</td>
+<td style="text-align: right;">24270</td>
+<td style="text-align: right;">11038</td>
+<td style="text-align: right;">5922</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Dec</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2018-03-12 20:00:00</td>
+<td style="text-align: right;">397</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9762</td>
+<td style="text-align: right;">5383</td>
+<td style="text-align: right;">315</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1368</td>
+<td style="text-align: right;">5987</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5539</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">306</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3254</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">3564</td>
+<td style="text-align: right;">34957</td>
+<td style="text-align: right;">34759</td>
+<td style="text-align: right;">69.89</td>
+<td style="text-align: right;">77.92</td>
+<td style="text-align: right;">32514</td>
+<td style="text-align: right;">11150</td>
+<td style="text-align: right;">15460</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Mar</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2015-04-30 12:00:00</td>
+<td style="text-align: right;">376</td>
+<td style="text-align: right;">964</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4355</td>
+<td style="text-align: right;">5990</td>
+<td style="text-align: right;">381</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">170</td>
+<td style="text-align: right;">1056</td>
+<td style="text-align: right;">2237</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4040</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">5418</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5833</td>
+<td style="text-align: right;">4976</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">5920</td>
+<td style="text-align: right;">30136</td>
+<td style="text-align: right;">30187</td>
+<td style="text-align: right;">49.71</td>
+<td style="text-align: right;">64.12</td>
+<td style="text-align: right;">31121</td>
+<td style="text-align: right;">15166</td>
+<td style="text-align: right;">11690</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">Apr</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2018-08-07 11:00:00</td>
+<td style="text-align: right;">367</td>
+<td style="text-align: right;">419</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4862</td>
+<td style="text-align: right;">2884</td>
+<td style="text-align: right;">221</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">166</td>
+<td style="text-align: right;">1232</td>
+<td style="text-align: right;">2268</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5970</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">5454</td>
+<td style="text-align: right;">315</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2091</td>
+<td style="text-align: right;">5171</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">2287</td>
+<td style="text-align: right;">28829</td>
+<td style="text-align: right;">28200</td>
+<td style="text-align: right;">60.97</td>
+<td style="text-align: right;">73.98</td>
+<td style="text-align: right;">26402</td>
+<td style="text-align: right;">11676</td>
+<td style="text-align: right;">8386</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Aug</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2018-07-19 03:00:00</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">660</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4579</td>
+<td style="text-align: right;">4718</td>
+<td style="text-align: right;">236</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">209</td>
+<td style="text-align: right;">1027</td>
+<td style="text-align: right;">2655</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6008</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">307</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">450</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">2170</td>
+<td style="text-align: right;">25284</td>
+<td style="text-align: right;">25346</td>
+<td style="text-align: right;">61.15</td>
+<td style="text-align: right;">64.50</td>
+<td style="text-align: right;">23566</td>
+<td style="text-align: right;">7004</td>
+<td style="text-align: right;">10193</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Jul</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Let’s look at the distribution of our actual day ahead prices.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>priceDayAheadDistribution <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> price_actual, <span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> price_actual), <span class="at">fill =</span> <span class="st">'red'</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>priceDayAheadDistribution</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/priceDayAheadDistribution-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Our response variable is normally distributed, so we can work with this response variable without making any changes.</p>
+<p>Let’s build some plots and see if we can spot any visual trends.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> generation_total, <span class="at">y =</span> price_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> generation_total, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plot2 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_load_actual, <span class="at">y =</span> price_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_load_actual, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plot3 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_load_forecast, <span class="at">y =</span> price_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_load_forecast, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>plot4 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_load_forecast, <span class="at">y =</span> total_load_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_load_forecast, <span class="at">y =</span> total_load_actual))</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>plot5 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> price_day_ahead, <span class="at">y =</span> price_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> price_day_ahead, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>plot6 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> renewable_generation_total, <span class="at">y =</span> price_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> renewable_generation_total, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>plot7 <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> nonrenewable_generation_total, <span class="at">y =</span> price_actual), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> nonrenewable_generation_total, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>plot8 <span class="ot">&lt;-</span> train<span class="sc">|&gt;</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">group =</span> hour_of_day, <span class="at">x =</span> hour_of_day, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> hour_of_day, <span class="at">y =</span> price_actual))</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>plot9 <span class="ot">&lt;-</span> train<span class="sc">|&gt;</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(.<span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">group =</span> month_of_year, <span class="at">x =</span> month_of_year, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> month_of_year, <span class="at">y =</span> price_actual))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The first two plots explore the TSO model predictions of total load and price, compared to their true values.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot4 <span class="sc">/</span> plot5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plot45-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the first plot, the predictions are very accurate and hug the line <span class="math inline">\(y = x\)</span>, indicating that the model used to predict the total load is accurate and reliable. However, in the second plot we see that the predicted prices for the next day are much less accurate. It is clear they follow some positive relationship, however it is not necessarily linear. We will try to improve upon this with our models.</p>
+<p>The following plots show the affect of generation, and variations of generation, and how they affect the day ahead price.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plot1 <span class="sc">/</span> plot6 <span class="sc">/</span> plot7</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plot167-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see some interesting relationships in these plots. The <code>generation_total</code> and the <code>nonrenewable_generation_total</code> appear to have a positive relationship, whereas the <code>renewable_generation_total</code> doesn’t appear to have a strong positive or negative relationship.</p>
+<p>The following plots show the affect of <code>total_load_actual</code> and <code>total_load_forecast</code> on the <code>price_actual</code> response. We assume that the TSO model to predict prices has access to the load forecast model, so we will include this predictor in our model construction.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot2 <span class="sc">/</span> plot3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plot23-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Both of these plots seem to show a positive, somewhat linear relationship.</p>
+<p>The following plots are quite interesting, and are built from extracting data from the <code>time</code> predictor in the dataset. By extracting <code>hour_of_day</code> and <code>month_of_year</code>, we can see how electricity prices change throughout the day and throughout the year.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot8 <span class="sc">/</span> plot9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plot89-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These plots show some really clear relationships with curvature. These strong relationships will certainly improve our model accuracy.</p>
+</section>
+<section id="model-construction" class="level2">
+<h2 class="anchored" data-anchor-id="model-construction">Model Construction</h2>
+<p>We will use cross validation throughout our model construction to improve our ability to make accurate decisions.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>train_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train, <span class="at">v =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="linear-regression-model" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression-model">Linear Regression Model</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lin_reg_spec <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(), <span class="at">mixture =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>lin_reg_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price_actual <span class="sc">~</span> ., <span class="at">data =</span> predictors) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_other</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>lin_reg_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lin_reg_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(lin_reg_rec)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>lin_reg_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">penalty</span>(),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mixture</span>(),<span class="sc">+</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">10</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>n_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makeCluster</span>(n_cores <span class="sc">-</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"PSOCK"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cluster)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>lin_reg_tune_results <span class="ot">&lt;-</span> lin_reg_wf <span class="sc">%&gt;%</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> lin_reg_grid,</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cluster)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>After using hyper paramater tuning to build a linear regression model, we look at the 10 best models it built in order of ascending RMSE.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(lin_reg_tune_results, lin_reg_wf, file = "lin_reg_tune_results.RData")</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"lin_reg_tune_results.RData"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>lin_reg_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span> <span class="st">"rmse"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">penalty</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mixture</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">std_err</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.0059948</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29642</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0478108</td>
+<td style="text-align: left;">Preprocessor1_Model098</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0059948</td>
+<td style="text-align: right;">0.8888889</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29647</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0478723</td>
+<td style="text-align: left;">Preprocessor1_Model088</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0059948</td>
+<td style="text-align: right;">0.7777778</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29658</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0479133</td>
+<td style="text-align: left;">Preprocessor1_Model078</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model011</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model012</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model013</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000002</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model014</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000028</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model015</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000359</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model016</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0004642</td>
+<td style="text-align: right;">0.1111111</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.29662</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0481989</td>
+<td style="text-align: left;">Preprocessor1_Model017</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>best_lin_reg <span class="ot">&lt;-</span> lin_reg_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>lin_reg_wf_final <span class="ot">&lt;-</span> lin_reg_wf <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(best_lin_reg)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>lin_reg_fit <span class="ot">&lt;-</span> lin_reg_wf_final <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We fit the best model to our training data, and calculate the RMSE.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(lin_reg_fit, file = "lin_reg_fit.RData")</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"lin_reg_fit.RData"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>lin_reg_predictions_train <span class="ot">&lt;-</span> lin_reg_fit <span class="sc">|&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(train) <span class="sc">|&gt;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">.pred_lin_reg_train =</span> .pred)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>lin_reg_predictions_train <span class="sc">|&gt;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(.pred_lin_reg_train, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.28414</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>On the training data, we see that this linear regression model has an RMSE of 10.28, which is already outperforming the TSO RMSE of 13.25.</p>
+<p>Let’s make predictions on the <code>validation</code> data set.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lin_reg_predictions_validation <span class="ot">&lt;-</span> lin_reg_fit <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(validation) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">.pred_lin_reg_validation =</span> .pred)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>lin_reg_predictions_validation <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(.pred_lin_reg_validation, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">10.21945</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>We see that our RMSE on the <code>validation</code> data is 10.22, which interestingly is better than the training data.</p>
+<p>Let’s plot our predictions against the true values.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>xVals1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">26298</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">120</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>yVals1 <span class="ot">&lt;-</span> xVals1</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#linedata &lt;- tibble(x = xVals, y = yVals)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>xVals2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">4383</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">120</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>yVals2 <span class="ot">&lt;-</span> xVals2</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>lin_reg_plot_train <span class="ot">&lt;-</span> lin_reg_predictions_train <span class="sc">|&gt;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(xVals1, yVals1) <span class="sc">|&gt;</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred_lin_reg_train, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xVals1, <span class="at">y =</span> yVals1), <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>lin_reg_plot_validation <span class="ot">&lt;-</span> lin_reg_predictions_validation <span class="sc">|&gt;</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(xVals2, yVals2) <span class="sc">|&gt;</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred_lin_reg_validation, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xVals2, <span class="at">y =</span> yVals2), <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>lin_reg_plot_train <span class="sc">+</span> lin_reg_plot_validation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plotLinReg-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From these plots, we can see that this model is outperforming the TSO model, but still can be improved.</p>
+</section>
+<section id="random-forest-model" class="level3">
+<h3 class="anchored" data-anchor-id="random-forest-model">Random Forest Model</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rf_spec <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">mtry =</span> <span class="fu">tune</span>(), <span class="at">trees =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>rf_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price_actual <span class="sc">~</span> ., <span class="at">data =</span> predictors) <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_other</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(rf_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rf_rec)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtry</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>)),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">trees</span>(),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">5</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>n_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makeCluster</span>(n_cores <span class="sc">-</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"PSOCK"</span>)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cluster)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>rf_tune_results <span class="ot">&lt;-</span> rf_wf <span class="sc">%&gt;%</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> rf_grid,</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cluster)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>After using hyperparamater tuning to build a random forest model, we show the best 10 models in order of ascending RMSE.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(rf_tune_results, rf_wf, file = "rf_tune_results.RData")</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"rf_tune_results.RData"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>rf_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span> <span class="st">"rmse"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">mtry</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trees</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">std_err</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.570574</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0472913</td>
+<td style="text-align: left;">Preprocessor1_Model25</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.571607</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0477593</td>
+<td style="text-align: left;">Preprocessor1_Model20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.572664</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0472862</td>
+<td style="text-align: left;">Preprocessor1_Model15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.588664</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0468897</td>
+<td style="text-align: left;">Preprocessor1_Model10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.633177</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0488629</td>
+<td style="text-align: left;">Preprocessor1_Model24</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.635829</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0483290</td>
+<td style="text-align: left;">Preprocessor1_Model19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.638231</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0453621</td>
+<td style="text-align: left;">Preprocessor1_Model14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.641607</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0442504</td>
+<td style="text-align: left;">Preprocessor1_Model09</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.782919</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0448245</td>
+<td style="text-align: left;">Preprocessor1_Model18</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.783133</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0454290</td>
+<td style="text-align: left;">Preprocessor1_Model23</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>best_rf <span class="ot">&lt;-</span> rf_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>rf_wf_final <span class="ot">&lt;-</span> rf_wf <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(best_rf)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>rf_fit <span class="ot">&lt;-</span> rf_wf_final <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We fit our best model to the training data, and calculate the RMSE.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(rf_fit, file = "rf_fit.RData")</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"rf_fit.RData"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>rf_predictions_train <span class="ot">&lt;-</span> rf_fit <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(train) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">.pred_rf_train =</span> .pred)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>rf_predictions_train <span class="sc">|&gt;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(.pred_rf_train, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">1.772513</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>On the training data, we see a RMSE of 1.77! This is quite a bit better than the linear regression model and the TSO model.</p>
+<p>Let’s make predictions for our <code>validation</code> dataset.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>rf_predictions_validation <span class="ot">&lt;-</span> rf_fit <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(validation) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">.pred_rf_validation =</span> .pred)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>rf_predictions_validation <span class="sc">|&gt;</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(.pred_rf_validation, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.118898</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>The RMSE for our <code>validation</code> dataset was 4.12, which is worse than the RMSE on the training data, however it is still significantly better than the RMSE of the linear regression and the TSO models.</p>
+<p>Let’s plot our predictions compared to the true day ahead prices.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>xVals1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">26298</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">120</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>yVals1 <span class="ot">&lt;-</span> xVals1</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#linedata &lt;- tibble(x = xVals, y = yVals)</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>xVals2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">4383</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">120</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>yVals2 <span class="ot">&lt;-</span> xVals2</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>rf_plot_train <span class="ot">&lt;-</span> rf_predictions_train <span class="sc">|&gt;</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(xVals1, yVals1) <span class="sc">|&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred_rf_train, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xVals1, <span class="at">y =</span> yVals1), <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>rf_plot_validation <span class="ot">&lt;-</span> rf_predictions_validation <span class="sc">|&gt;</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(xVals2, yVals2) <span class="sc">|&gt;</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred_rf_validation, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xVals2, <span class="at">y =</span> yVals2), <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>rf_plot_train <span class="sc">+</span> rf_plot_validation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plotRf-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see that the predictions from the random forest model are significantly better, and are getting closer and closer to the line <span class="math inline">\(y = x\)</span>, the ideal model. We will see if we can improve upon this in our last model class, extreme gradient boosting.</p>
+</section>
+<section id="extreme-gradient-boosting-model" class="level3">
+<h3 class="anchored" data-anchor-id="extreme-gradient-boosting-model">Extreme Gradient Boosting Model</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>xgb_spec <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(<span class="at">mtry =</span> <span class="fu">tune</span>(), <span class="at">trees =</span> <span class="fu">tune</span>(), <span class="at">learn_rate =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>xgb_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price_actual <span class="sc">~</span> ., <span class="at">data =</span> predictors) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_other</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>xgb_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(xgb_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(xgb_rec)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>xgb_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtry</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>)),</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">trees</span>(),</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">learn_rate</span>(),</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">5</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>n_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makeCluster</span>(n_cores <span class="sc">-</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"PSOCK"</span>)</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cluster)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>xgb_tune_results <span class="ot">&lt;-</span> xgb_wf <span class="sc">%&gt;%</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> xgb_grid,</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cluster)</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>After using hyperparamater tuning to build an extreme gradient boosting model, we show the best 10 models in order of ascending RMSE.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(xgb_tune_results, xgb_wf, file = "xgb_tune_results.RData")</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"xgb_tune_results.RData"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>xgb_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span> <span class="st">"rmse"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">mtry</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trees</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">learn_rate</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">std_err</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.790247</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0350662</td>
+<td style="text-align: left;">Preprocessor1_Model100</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.795045</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0429371</td>
+<td style="text-align: left;">Preprocessor1_Model075</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.803137</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0324896</td>
+<td style="text-align: left;">Preprocessor1_Model125</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.820950</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0446594</td>
+<td style="text-align: left;">Preprocessor1_Model050</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.858999</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0386719</td>
+<td style="text-align: left;">Preprocessor1_Model099</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.862962</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0337291</td>
+<td style="text-align: left;">Preprocessor1_Model124</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.876833</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0429419</td>
+<td style="text-align: left;">Preprocessor1_Model074</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.924880</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0451926</td>
+<td style="text-align: left;">Preprocessor1_Model049</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.986085</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0354970</td>
+<td style="text-align: left;">Preprocessor1_Model123</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">4.006600</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0403066</td>
+<td style="text-align: left;">Preprocessor1_Model098</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>best_xgb <span class="ot">&lt;-</span> xgb_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>xgb_wf_final <span class="ot">&lt;-</span> xgb_wf <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(best_xgb)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>xgb_fit <span class="ot">&lt;-</span> xgb_wf_final <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We fit our best model to the training data, and calculate the RMSE.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(xgb_fit, file = "xgb_fit.RData")</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"xgb_fit.RData"</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>xgb_predictions_train <span class="ot">&lt;-</span> xgb_fit <span class="sc">|&gt;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(train) <span class="sc">|&gt;</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">.pred_xgb_train =</span> .pred)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>xgb_predictions_train <span class="sc">|&gt;</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(.pred_xgb_train, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.988913</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>On our training data, we see an RMSE of 0.99!! This is significantly better than any of the previously built models, including the TSO model.</p>
+<p>Let’s look at the RMSE for the <code>validation</code> dataset.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>xgb_predictions_validation <span class="ot">&lt;-</span> xgb_fit <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(validation) <span class="sc">|&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">.pred_xgb_validation =</span> .pred)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>xgb_predictions_validation <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rmse</span>(.pred_xgb_validation, price_actual) <span class="sc">|&gt;</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">3.439827</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>On our <code>validation</code> data we see a RMSE of 3.44. This is definitely worse than the RMSE on the training data, however it is still significantly better than the RMSE of the other models tested on the <code>validation</code> set.</p>
+<p>Let’s plot our predictions compared to the true day ahead prices.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>xgb_plot_train <span class="ot">&lt;-</span> xgb_predictions_train <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(xVals1, yVals1) <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred_xgb_train, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xVals1, <span class="at">y =</span> yVals1), <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>xgb_plot_validation <span class="ot">&lt;-</span> xgb_predictions_validation <span class="sc">|&gt;</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(xVals2, yVals2) <span class="sc">|&gt;</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred_xgb_validation, <span class="at">y =</span> price_actual)) <span class="sc">+</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xVals2, <span class="at">y =</span> yVals2), <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>xgb_plot_train <span class="sc">+</span> xgb_plot_validation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analytics_Report_files/figure-html/plotXgb-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This model is even better than the random forest model, and this can be seen in the plot. Our predictions are getting closer and closer to the line <span class="math inline">\(y = x\)</span> and our RMSE has improved drastically.</p>
+</section>
+</section>
+<section id="model-assessment" class="level2">
+<h2 class="anchored" data-anchor-id="model-assessment">Model Assessment</h2>
+<section id="tso-model" class="level3">
+<h3 class="anchored" data-anchor-id="tso-model">TSO Model</h3>
+<p>The TSO model created by ENTSOE was used as a baseline for comparison with our constructed models. This model had an RMSE of 13.25 on the complete data set, indicating that 95% of our predictions would fall within plus or minus 2 RMSEs, about $26. This is quite bad as the electricity prices were generally in the $50 or $60 range. We greatly improve upon this in our constructed models.</p>
+</section>
+<section id="linear-regression-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression-model-1">Linear Regression Model</h3>
+<p>The linear regression model was built using hyper parameter tuning. The best model had a mixture of 1.0 and a penalty of 0.0059948. This model had an RMSE of 10.28 on the training data, and 10.22 on the validation data. This RMSE is already quite a bit better than the TSO model, but plots of our predictions compared to the true values indicate that the model can still be improved. While linear regression models might not give us the most accurate predictions for such complex relationships in the real world, their interpretability is unmatched by other model classes.</p>
+<p>Let’s look at our estimates for our linear regression model.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lin_reg_fit <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">term</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">penalty</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">5.4796101</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_biomass</td>
+<td style="text-align: right;">0.0252219</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_fossil_brown_coal_lignite</td>
+<td style="text-align: right;">-0.0008337</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_fossil_coal_derived_gas</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_fossil_gas</td>
+<td style="text-align: right;">0.0008796</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_fossil_hard_coal</td>
+<td style="text-align: right;">0.0018800</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_fossil_oil</td>
+<td style="text-align: right;">-0.0015470</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_fossil_oil_shale</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_fossil_peat</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_geothermal</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_hydro_pumped_storage_consumption</td>
+<td style="text-align: right;">-0.0026821</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_hydro_run_of_river_and_poundage</td>
+<td style="text-align: right;">0.0050756</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_hydro_water_reservoir</td>
+<td style="text-align: right;">0.0001605</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_marine</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_nuclear</td>
+<td style="text-align: right;">-0.0001249</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_other</td>
+<td style="text-align: right;">0.0251382</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_other_renewable</td>
+<td style="text-align: right;">0.2800691</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_solar</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_waste</td>
+<td style="text-align: right;">-0.0169519</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">generation_wind_offshore</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">generation_wind_onshore</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">forecast_solar_day_ahead</td>
+<td style="text-align: right;">0.0003795</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">forecast_wind_onshore_day_ahead</td>
+<td style="text-align: right;">0.0001493</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">total_load_forecast</td>
+<td style="text-align: right;">0.0001215</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hour_of_day</td>
+<td style="text-align: right;">0.1306729</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month_of_year_01</td>
+<td style="text-align: right;">12.4060470</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">month_of_year_02</td>
+<td style="text-align: right;">6.1403905</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month_of_year_03</td>
+<td style="text-align: right;">-7.5809313</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">month_of_year_04</td>
+<td style="text-align: right;">4.8760670</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month_of_year_05</td>
+<td style="text-align: right;">0.4609942</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">month_of_year_06</td>
+<td style="text-align: right;">0.1563603</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month_of_year_07</td>
+<td style="text-align: right;">1.6031846</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">month_of_year_08</td>
+<td style="text-align: right;">2.1259401</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month_of_year_09</td>
+<td style="text-align: right;">1.5112374</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">month_of_year_10</td>
+<td style="text-align: right;">-1.0475535</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month_of_year_11</td>
+<td style="text-align: right;">0.9580279</td>
+<td style="text-align: right;">0.0059948</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Our biggest contributors to our linear regression model seem to be from the <code>month_of_year</code> column, which is quite interesting. This indicates that day ahead electrical prices may be more dependent on the time of year, rather than the load forecast or current generation statistics.</p>
+</section>
+<section id="random-forest-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="random-forest-model-1">Random Forest Model</h3>
+<p>The random forest model was built using hyper parameter tuning and took nearly 45 minutes to tune. The best model had an RMSE of 1.77 on the training data, and 4.12 on the validation data. This is significantly better than both the linear regression and TSO models. We can now make accurate predictions within plus or minus $8 of the true price.</p>
+</section>
+<section id="extreme-gradient-boosting-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="extreme-gradient-boosting-model-1">Extreme Gradient Boosting Model</h3>
+<p>The extreme gradient boosting model was built using hyper parameter tuning and took 23 minutes to tune. The best model had an RMSE of 0.99 on the training data, and 3.44 on the validation data. This is even better than the random forest model. This model can now make accurate predictions within plus or minus $7 of the true price. This model has met the limitations of accuracy for the way our model was built. Further accuracy could be attained by increasing the number of cross validation folds and the number of levels in the parameter tuning step, however this would greatly increase the time required to build the best model.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>By effectively constructing models to predict power prices one day ahead of time, this project greatly improved the baseline TSO model. The linear regression model’s simplicity limited its ability to capture the complex relationships in energy markets, with an RMSE of 10.22 on the validation data, but its interpretability is much better than that of the random forest and extreme gradient boosting models.</p>
+<p>The performance of other model classes, such as random forest and extreme gradient boosting, was considerably better. On the validation data, the extreme gradient boosting model achieved an RMSE of 3.44. Because of its ability to predict prices within a range of plus or minus $7, it is a reliable tool for real world applications. The random forest model was still quite good, but its performance could not match that of the extreme gradient boosting model.</p>
+<p>There are still challenges with the project even with successful models. Our ability to improve model construction was limited by the time needed for cross validation and hyper parameter tuning. Also, model classes other than linear regression models provide great predictive power, but at the cost of interpretability.</p>
+<p>These results have important implications for industrial consumers, energy producers, and grid operators. Predicting prices accurately one day in advance allows for more effective resource allocation, reduces the risk of fluctuations in renewable energy, and enhances grid stability.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>[1]“Hourly energy demand generation and weather,” www.kaggle.com. https://www.kaggle.com/datasets/nicholasjhana/energy-consumption-generation-prices-and-weather</p>
+<p>[2]OpenAI, “ChatGPT,” ChatGPT, 2024. https://chatgpt.com/</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
