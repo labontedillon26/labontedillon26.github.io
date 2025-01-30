@@ -12,8 +12,8 @@
 
 ### Welcome
 
-Welcome to my page – a man of many talents, few inhibitions, and a boundless sense of humor! From crafting toys at the Happy-Go-Lucky Toy Factory to ensuring the quality of Quahog’s favorite brews at Pawtucket Brewery, I’ve built a career out of hard work, good laughs, and the occasional chicken fight. When I’m not on the job, you can find me spending time with my family, hosting impromptu karaoke nights, or dreaming up my next big idea. Grab a snack and stay a while – you never know what adventures we might embark on together!
+My name is Dillon Labonte and I am a junior at Southern New Hampshire University. I am majoring in electrical engineering and mathematics while also being a member of the men's cross country team. I was the recipient of the Elite 24 and the Elite 90 awards (highest GPA at conference championships, and at national championships) this past fall. I am the lead STEM peer educator (tutor) at my university's learning center as well as the math major ambassador. I have found a love for electrical engineering throughout my undergrad and plan on pursuing a career in this field. I will be interning as a hardware engineer in the summer of 2025, so I am excited to get some relevant experience under my belt!
 
 ### Sample Work Products
 
-I'm available for safety-related consulting work in the manufacturing and production fields. Check out [one of my recent safety reports](https://agmath.github.io/PagesBasic/SiteFiles/SampleSafetyReport.html) from an incident at Pawtucket Brewery as an example of what I can do for you!
+I recently completed a report where I used linear regression to model day ahead pricing for electricity. This was a final project for a regression analysis course as part of my mathematics major, and has direct applications in the field of data science and electrical engineering. 
