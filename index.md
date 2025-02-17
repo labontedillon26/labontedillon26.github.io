@@ -23,3 +23,8 @@ I recently completed a report where I used linear regression to model day ahead 
 
 <a href="https://labontedillon26.github.io/SiteFiles/EE201_Project2.pdf" target="_blank"><u>Signals and Systems Fourier Series Project:</u></a> <br/>
 I completed the project as part of a signals and systems course in my sophomore year. This course focuses on the Fourier series, where I derived the complex coefficients analytically as a function of duty cycle. The project walks through Fourier series representations of square waves with varying duty cycles, harmonic magnitudes and phases for each duty cycle, and explores relations between DC components and harmonics as a function of duty cycle. This project was an introduction to Fourier series and transforms, a vital tool used in many fields of electrical engineering.
+
+<br/>
+
+<a href="https://labontedillon26.github.io/MAT434StatisticalLearning/SpaceshipTitanicEDA.html" target="_blank"><u>Classification Models on Spaceship Titanic Data Set (fake):</u></a> <br/>
+This report was created at the beginning of my statistical learning and classification class. In this report, we were exposed to two types of binary classfiers as well as hyperparameter tuning, data visualization, confusion matrices, and more
