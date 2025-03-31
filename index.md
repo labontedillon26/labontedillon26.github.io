@@ -16,7 +16,7 @@ My name is Dillon Labonte and I am a junior at Southern New Hampshire University
 
 ### Sample Work Products
 
-<a href="https://labontedillon26.github.io/SiteFiles/Analytics_Report.html" target="_blank"><u>Regression Analysis Analytics Report:</u></a> <br/> 
+<a href="https://labontedillon26.github.io/MAT300/Analytics_Report.html" target="_blank"><u>Regression Analysis Analytics Report:</u></a> <br/> 
 I recently completed a report where I used linear regression to model day ahead pricing for electricity. This was a final project for a regression analysis course as part of my mathematics major, and has direct applications in the field of data science and electrical engineering. 
 
 <br/>
