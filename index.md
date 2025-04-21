@@ -19,12 +19,6 @@ My name is Dillon Labonte and I am a junior at Southern New Hampshire University
 <a href="https://labontedillon26.github.io/MAT300/Analytics_Report.html" target="_blank"><u>Regression Analysis Analytics Report:</u></a> <br/> 
 I recently completed a report where I used linear regression to model day ahead pricing for electricity. This was a final project for a regression analysis course as part of my mathematics major, and has direct applications in the field of data science and electrical engineering. 
 
-<br/>
-
 <a href="https://labontedillon26.github.io/SiteFiles/EE201_Project2.pdf" target="_blank"><u>Signals and Systems Fourier Series Project:</u></a> <br/>
 I completed the project as part of a signals and systems course in my sophomore year. This course focuses on the Fourier series, where I derived the complex coefficients analytically as a function of duty cycle. The project walks through Fourier series representations of square waves with varying duty cycles, harmonic magnitudes and phases for each duty cycle, and explores relations between DC components and harmonics as a function of duty cycle. This project was an introduction to Fourier series and transforms, a vital tool used in many fields of electrical engineering.
 
-<br/>
-
-<a href="https://labontedillon26.github.io/MAT434StatisticalLearning/SpaceshipTitanicEDA.html" target="_blank"><u>Classification Models on Spaceship Titanic Data Set (fake):</u></a> <br/>
-This report was created at the beginning of my statistical learning and classification class. In this report, we were exposed to two types of binary classfiers as well as hyperparameter tuning, data visualization, confusion matrices, and more
