@@ -16,6 +16,18 @@ My name is Dillon Labonte and I am a rising senior at Southern New Hampshire Uni
 
 ### Sample Work Products
 
+<a href="https://labontedillon26.github.io/SiteFiles/AnalogElectronicsPortfolio.pdf" target="_blank"><u>Analog Electronics Portfolio:</u></a> <br/>
+During the spring of 2025, I took an analog electronics course with a heavy design focus. Content included op-amps, semiconductors, diodes, MOSFETs, BJTs, and single transistor amplifiers. This document provides a compilation of the projects that I completed throughout the semester in the following order:
+
+<ol>
+  <li>Homework 1 - Temperature Sensor Interface</li>
+  <li>Homework 2 - PWM Generator</li>
+  <li>Homework 3 - AM Demodulator</li>
+  <li>Homework 4 - Voltage Regulator</li>
+  <li>Homework 5 - Variable Gain Amplifier</li>
+  <li>Lab Final Project</li>
+</ol>
+
 <a href="https://labontedillon26.github.io/MAT300/Analytics_Report.html" target="_blank"><u>Regression Analysis Analytics Report:</u></a> <br/> 
 In the fall of 2024 I completed a report where I used linear regression to model day ahead pricing for electricity. This was a final project for a regression analysis course as part of my mathematics major, and has direct applications in the field of data science and electrical engineering. 
 
@@ -24,4 +36,3 @@ This report was a final project for a statistical learning and classification co
 
 <a href="https://labontedillon26.github.io/SiteFiles/EE201_Project2.pdf" target="_blank"><u>Signals and Systems Fourier Series Project:</u></a> <br/>
 I completed the project as part of a signals and systems course in my sophomore year. This course focuses on the Fourier series, where I derived the complex coefficients analytically as a function of duty cycle. The project walks through Fourier series representations of square waves with varying duty cycles, harmonic magnitudes and phases for each duty cycle, and explores relations between DC components and harmonics as a function of duty cycle. This project was an introduction to Fourier series and transforms, a vital tool used in many fields of electrical engineering.
-
