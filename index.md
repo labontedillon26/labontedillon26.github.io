@@ -17,7 +17,7 @@ My name is Dillon Labonte and I am a senior at Southern New Hampshire University
 ### Sample Work Products
 
 <a href="https://labontedillon26.github.io/SiteFiles/EG490_Final_Paper.pdf" target="_blank"><u>Final Internship Paper:</u></a> <br/>
-In the summer of 2025, I interned as a hardware engineering intern at Hubbell Inc. in Portsmouth, NH. Through this internship, I contributed to a pilot EV charger program, focused on embedded system development and hardware integration. This paper gives a comprehensive overview of my work throughout the summer, as well as refelections on the experience and goals for the future.
+In the summer of 2025, I interned as a hardware engineering intern at Hubbell Inc. in Portsmouth, NH. Through this internship, I contributed to a pilot EV charger program, focused on embedded system development and hardware integration. This paper gives a comprehensive overview of my work throughout the summer, as well as reflections on the experience and goals for the future.
 
 <a href="https://labontedillon26.github.io/SiteFiles/AnalogElectronicsPortfolio.pdf" target="_blank"><u>Analog Electronics Portfolio:</u></a> <br/>
 During the spring of 2025, I took an analog electronics course with a heavy design focus. Content included op-amps, semiconductors, diodes, MOSFETs, BJTs, and single transistor amplifiers. This document provides a compilation of the projects that I completed throughout the semester in the following order:
