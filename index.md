@@ -12,7 +12,7 @@
 
 ### Welcome
 
-My name is Dillon Labonte and I am a senior at Southern New Hampshire University. I am majoring in electrical engineering and mathematics while also being a member of the men's cross country team. I was the recipient of the Elite 24 and the Elite 90 awards (highest GPA at conference championships, and at national championships) this past fall. I am the lead STEM peer educator (tutor) at my university's learning center as well as the math major ambassador. I have found a love for electrical engineering throughout my undergrad and plan on pursuing a career in this field. I was a hardware engineering intern at Hubbell Inc. in the summer of 2025 and am eager to start my professional career!
+My name is Dillon Labonte and I am a senior at Southern New Hampshire University. I am majoring in electrical engineering and mathematics while also being a member of the men's cross country team. I am a two time recipient of the Elite 24 and the Elite 90 awards (highest GPA at conference championships, and at national championships) this past fall. I am the lead STEM peer educator (tutor) at my university's learning center as well as the math major ambassador. I have found a love for electrical engineering throughout my undergrad and plan on pursuing a career in this field. I was a hardware engineering intern at Hubbell Inc. in the summer of 2025 and am eager to start my professional career!
 
 ### Sample Work Products
 
